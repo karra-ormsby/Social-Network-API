@@ -1,7 +1,6 @@
 const { Schema, model } = require('mongoose');
 const thoughtSchema = require('./Thought');
 
-
 const userSchema = new Schema (
     {
         username: {
@@ -17,7 +16,14 @@ const userSchema = new Schema (
             //check email address validation later
             match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ 
         },
-        thoughts: [thoughtSchema],
+        //why doesn't this work?
+        // thoughts: [thoughtSchema],
+        thoughts: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'thought'
+            }
+        ],
         friends: [
             {
                 type: Schema.Types.ObjectId,
