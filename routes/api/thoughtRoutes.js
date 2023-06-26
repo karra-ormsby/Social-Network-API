@@ -30,14 +30,14 @@ router.post('/', async (req, res) => {
     try {
         const thought = await Thought.create(req.body);
         const user = await User.findOneAndUpdate(
-            { _id: req.body.userId },
-            { $addToSet: { thought: thought._id } },
+            { _id: req.body.username },
+            { $addToSet: { thoughts: thought._id } },
             { new: true }
         );
 
         if (!user) {
             return res.status(404).json({
-                message: 'Application created, but found no user with that ID',
+                message: 'Thought created, but found no user with that ID',
             })
         }
         res.json('Created the thought 🎉');
@@ -45,5 +45,36 @@ router.post('/', async (req, res) => {
         res.status(500).send(err);
     }
 });
+
+//PUT update a thought by its _id
+router.put('/:thoughtId', async (req, res) => {
+    try {
+        const result = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { thoughtText: req.body.thoughtText },
+            { new: true }
+        );
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+//DELETE a thought by its _id
+router.delete('/:thoughtId', async (req, res) => {
+    try {
+        const result = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
+
+        if (!result) {
+            return res.status(404).json({ message: 'No thought with that ID' });
+        }
+
+        res.status(200).json({ message: 'Thought deleted!' });
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+
 
 module.exports = router;
