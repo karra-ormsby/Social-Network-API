@@ -7,7 +7,9 @@ const router = require('express').Router();
 // GET all users
 router.get('/', async (req, res) => {
     try {
-        const result = await User.find({});
+        const result = await User.find({})
+        .select('-__v')
+        .populate('thoughts')
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
@@ -19,7 +21,7 @@ router.get('/:userId', async (req, res) => {
     try {
         const result = await User.findOne({ _id: req.params.userId })
             .select('-__v')
-            .populate('thought');
+            .populate('thoughts');
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
