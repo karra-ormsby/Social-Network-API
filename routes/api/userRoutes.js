@@ -10,8 +10,8 @@ router.get('/', async (req, res) => {
     try {
         const result = await User.find({})
         .select('-__v')
-        .populate('thoughts')
-            .populate('friends');
+        // .populate('thoughts')
+        // .populate('friends');
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
@@ -23,7 +23,8 @@ router.get('/:userId', async (req, res) => {
     try {
         const result = await User.findOne({ _id: req.params.userId })
             .select('-__v')
-            .populate('thoughts');
+            .populate('thoughts')
+            .populate('friends');
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
@@ -89,10 +90,31 @@ router.post('/:userId/friends/:friendId', async (req, res) => {
                 message: 'Friend added, but found no user with that ID',
             })
         }
-        res.json('Added friend 🎉');
+        // res.json('Added friend 🎉');
+        res.status(200).json(user);
     } catch (err) {
         res.status(500).send(err);
     }
-})
+});
+
+// DELETE a friend from users friend list 
+router.delete('/:userId/friends/:friendId', async (req, res) => {
+    try {
+        const friend = await User.findOne({ _id: req.params.friendId });
+
+        if (!friend) {
+            return res.status(404).json({ error: 'Friend not found' });
+        }
+
+        const user = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $pull: { friends: friend._id } },
+            { new: true }
+        );
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
 
 module.exports = router;

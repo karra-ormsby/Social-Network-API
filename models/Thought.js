@@ -14,14 +14,22 @@ const thoughtSchema = new Schema (
             default: Date.now,
             //need a getter method to format the timestamp on query
         },
-        username: { //the user that created the thought
-            // type: String,
-            type: Schema.Types.ObjectId,
+        username: [
+            { //the user that created the thought
+            type: String,
+            // type: Schema.Types.ObjectId,
             required: true,
             ref: 'user',
-        },
+            }
+        ],
         // reactions: [reactionSchema]
-    },
+        reactions: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'reaction'
+            }
+        ],
+        },
     {
         toJSON: {
             virtuals: true,

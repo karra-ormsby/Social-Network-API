@@ -1,5 +1,4 @@
 const { Schema, model } = require('mongoose');
-const thoughtSchema = require('./Thought');
 
 const userSchema = new Schema (
     {
@@ -16,8 +15,6 @@ const userSchema = new Schema (
             //check email address validation later
             match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ 
         },
-        //why doesn't this work?
-        // thoughts: [thoughtSchema],
         thoughts: [
             {
                 type: Schema.Types.ObjectId,
@@ -38,6 +35,10 @@ const userSchema = new Schema (
         id: false,
     }
 );
+
+userSchema.virtual('friendCount').get(function () {
+    return this.friends.length;
+})
 
 const User = model('user', userSchema);
 

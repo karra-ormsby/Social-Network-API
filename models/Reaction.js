@@ -11,7 +11,7 @@ const reactionSchema = new Schema (
             required: true,
             maxlength: 280,
         },
-        usernmae: { //why does this not have to reference user
+        username: { //why does this not have to reference user
             type: String,
             required: true,
             // ref: 'user',
@@ -31,6 +31,6 @@ const reactionSchema = new Schema (
     }
 );
 
-const Reaction = model('reaction', reactionSchema);
+// const Reaction = model('reaction', reactionSchema);
 
-module.exports = Reaction;
+// module.exports = Reaction;
