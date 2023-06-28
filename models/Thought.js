@@ -15,13 +15,11 @@ const thoughtSchema = new Schema (
             default: Date.now,
             get: createdAtFormatter
         },
-        username: [
-            {
+        username: {
             type: String,
             required: true,
             ref: 'user',
-            }
-        ],
+            },
         reactions: [reactionSchema]
         },
     {
