@@ -8,7 +8,8 @@ const router = require('express').Router();
 // GET all thoughts
 router.get('/', async (req, res) => {
     try {
-        const result = await Thought.find({});
+        const result = await Thought.find({})
+            .select('-__v');
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
@@ -19,6 +20,7 @@ router.get('/', async (req, res) => {
 router.get('/:thoughtId', async (req, res) => {
     try {
         const result = await Thought.findOne({ _id: req.params.thoughtId })
+            .select('-__v');
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
@@ -33,14 +35,15 @@ router.post('/', async (req, res) => {
             { username: req.body.username },
             { $addToSet: { thoughts: thought._id } },
             { new: true }
-        );
+        )
+        // .select('-__v');
 
         if (!user) {
             return res.status(404).json({
                 message: 'Thought created, but found no user with that ID',
             })
         }
-        res.json('Created the thought 🎉');
+        res.status(200).json(user);
     } catch (err) {
         res.status(500).send(err);
     }
@@ -53,7 +56,8 @@ router.put('/:thoughtId', async (req, res) => {
             { _id: req.params.thoughtId },
             { thoughtText: req.body.thoughtText },
             { new: true }
-        );
+        )
+        .select('-__v');
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
@@ -61,6 +65,7 @@ router.put('/:thoughtId', async (req, res) => {
 });
 
 //DELETE a thought by its _id
+//need to update the user to remove the thoughts
 router.delete('/:thoughtId', async (req, res) => {
     try {
         const result = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
@@ -83,7 +88,8 @@ router.post('/:thoughtId/reactions', async (req, res) => {
             { _id: req.params.thoughtId },
             { $addToSet: { reactions: req.body} },
             { new: true, runValidators: true }
-        );
+        )
+        .select('-__v');
         res.status(200).json(thought);
     } catch (err) {
         res.status(500).send(err);
@@ -97,7 +103,9 @@ router.delete('/:thoughtId/reactions/:reactionId', async(req, res) => {
             { _id: req.params.thoughtId },
             { $pull: { reactions: { reactionId: req.params.reactionId } } },
             { new: true }
-        );
+        )
+        .select('-__v');
+        //do i want to senf the updated thought or a message?
         res.status(200).json(thought);
     } catch (err) {
         res.status(500).send(err);

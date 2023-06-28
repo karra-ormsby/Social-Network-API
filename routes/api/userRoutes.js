@@ -9,9 +9,7 @@ const router = require('express').Router();
 router.get('/', async (req, res) => {
     try {
         const result = await User.find({})
-        .select('-__v')
-        // .populate('thoughts')
-        // .populate('friends');
+        .select('-__v');
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
@@ -53,7 +51,8 @@ router.put('/:userId', async (req, res) => {
             {_id: req.params.userId}, 
             {username: req.body.username},
             { new: true }
-        );
+        )
+        .select('-__v');
         res.status(200).json(result);
     } catch (err) {
         res.status(500).send(err);
@@ -70,7 +69,7 @@ router.delete('/:userId', async (req, res) => {
         }
 
         const thoughts = await Thought.deleteMany({ _id: { $in: user.thoughts } })
-        res.status(200).json({message: 'User and thoguths deleted!'});
+        res.status(200).json({message: 'User and thoughts deleted!'});
     } catch (err) {
         res.status(500).send(err);
     }
@@ -84,7 +83,8 @@ router.post('/:userId/friends/:friendId', async (req, res) => {
             { _id: req.params.userId },
             { $addToSet: { friends: friend._id } },
             { new: true }
-        );
+        )
+        .select('-__v');
         if (!user) {
             return res.status(404).json({
                 message: 'Friend added, but found no user with that ID',
