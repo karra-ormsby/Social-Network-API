@@ -22,13 +22,13 @@ const thoughtSchema = new Schema (
             ref: 'user',
             }
         ],
-        // reactions: [reactionSchema]
-        reactions: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'reaction'
-            }
-        ],
+        reactions: [reactionSchema]
+        // reactions: [
+        //     {
+        //         type: Schema.Types.ObjectId,
+        //         ref: 'reaction'
+        //     }
+        // ],
         },
     {
         toJSON: {

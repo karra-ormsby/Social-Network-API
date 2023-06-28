@@ -36,8 +36,8 @@ router.post('/', async (req, res) => {
     try {
         const result = await User.create(
             {
-             username: req.body.username,
-                email: req.body.email   
+            username: req.body.username,
+            email: req.body.email   
             }
         );
         res.status(200).json(result);
