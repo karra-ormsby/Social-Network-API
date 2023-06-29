@@ -90,7 +90,6 @@ router.post('/:userId/friends/:friendId', async (req, res) => {
                 message: 'Friend added, but found no user with that ID',
             })
         }
-        // res.json('Added friend 🎉');
         res.status(200).json(user);
     } catch (err) {
         res.status(500).send(err);

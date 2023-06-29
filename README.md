@@ -38,6 +38,8 @@ Once you start the server, `npm start`, you can use a program like Insomnia to r
     * POST to add a new friend to a user's friend list
     * DELETE to remove a friend from a user's friend list
 
+    ![GET all users, showing frind count](./images/GET%20all%20users.png)
+
 * /api/thoughts
     * GET to get all thoughts
     * GET to get a single thought by its _id (/:thoughtId)
@@ -49,7 +51,9 @@ Once you start the server, `npm start`, you can use a program like Insomnia to r
     * POST to create a reaction stored in a single thought's reactions array field
     * DELETE to remove a reaction by the reaction's reactionId (/:reactionId)
 
-A video of the usage of this application can be found [here]().
+    ![GET all thoguhts, showing reactions](./images/GET%20all%20thoughts.png)
+
+A video of the usage of this application can be found [here](https://drive.google.com/file/d/1i0tmF6V8hb5FtRMUAzaG7LYfEgPwOiZQ/view).
 
 ## Credits
 

@@ -36,7 +36,6 @@ router.post('/', async (req, res) => {
             { $addToSet: { thoughts: thought._id } },
             { new: true }
         )
-        // .select('-__v');
 
         if (!user) {
             return res.status(404).json({
@@ -65,14 +64,21 @@ router.put('/:thoughtId', async (req, res) => {
 });
 
 //DELETE a thought by its _id
-//need to update the user to remove the thoughts
 router.delete('/:thoughtId', async (req, res) => {
     try {
-        const result = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
+        const thought = await Thought.findOne({ _id: req.params.thoughtId });
 
-        if (!result) {
+        const deleteResult = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
+
+        if (!deleteResult) {
             return res.status(404).json({ message: 'No thought with that ID' });
         }
+
+        const updatedUser = await User.findOneAndUpdate(
+            { username: thought.username },
+            { $pull: { thoughts: req.params.thoughtId } },
+            { new: true }
+        );
 
         res.status(200).json({ message: 'Thought deleted!' });
     } catch (err) {
@@ -80,13 +86,15 @@ router.delete('/:thoughtId', async (req, res) => {
     }
 });
 
+
+
 // POST create a reaction stored in a single thought's reactions array field
 router.post('/:thoughtId/reactions', async (req, res) => {
     try {
         //since reactionSchema is not a model and sits in thoughts we do not need to create a reaction and then add it to Thought. We can just find a thought and then update it with the information of our reaction. When then runValidator: true so it will check that req.body contains the required things as defined by the schema.
         const thought = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $addToSet: { reactions: req.body} },
+            { $addToSet: { reactions: req.body } },
             { new: true, runValidators: true }
         )
         .select('-__v');
@@ -105,7 +113,6 @@ router.delete('/:thoughtId/reactions/:reactionId', async(req, res) => {
             { new: true }
         )
         .select('-__v');
-        //do i want to senf the updated thought or a message?
         res.status(200).json(thought);
     } catch (err) {
         res.status(500).send(err);
